@@ -18,7 +18,7 @@ spec:
     image:
       registry: docker.io
       repository: falcosecurity/falco
-      tag: 0.21.0
+      tag: 0.20.0
       pullPolicy: IfNotPresent
 
     docker:
@@ -71,8 +71,7 @@ spec:
         type: RollingUpdate
 
       ## Extra environment variables that will be pass onto deployment pods
-      env:
-        - FALCO_VERSION: be1ea2d9482d0e6e2cb14a0fd7e08cbecf517f94
+      env: {}
 
     # If is behind a proxy you can set the proxy server
     proxy:
