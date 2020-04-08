@@ -44,7 +44,7 @@ config:
     hostport: ""
 
   elasticsearch:
-    hostport: ""
+    hostport: "https://quickstart-es-http:9200"
     index: "falco"
     type: "event"
     minimumpriority: ""
