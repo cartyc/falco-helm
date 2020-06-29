@@ -87,7 +87,7 @@ spec:
 
     ebpf:
       # Enable eBPF support for Falco
-      enabled: true
+      enabled: false
 
       settings:
         # Needed to enable eBPF JIT at runtime for performance reasons.
