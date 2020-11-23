@@ -1,139 +1,220 @@
-# Default values for falcosidekick.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 
-replicaCount: 1
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: falco-sidekick
+  namespace: falco-system
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: falco-sidekick
+  interval: 5m
+  chart:
+    spec:
+      chart: falco
+      sourceRef:
+          kind: HelmRepository
+          namespace: falco-system
+          name: falco
+  values:
 
-image:
-  repository: falcosecurity/falcosidekick
-  tag: 2.11.1
-  pullPolicy: IfNotPresent
+    # Default values for falcosidekick.
+    # This is a YAML-formatted file.
+    # Declare variables to be passed into your templates.
 
-nameOverride: ""
-fullnameOverride: ""
+    replicaCount: 1
 
-podSecurityPolicy:
-  create: false
-  
-config:
+    image:
+      repository: falcosecurity/falcosidekick
+      tag: 2.15.0
+      pullPolicy: IfNotPresent
 
-  debug: false
-  ##
-  ## a list of comma separated custom fields to add to falco events, syntax is "key:value,key:value"
-  customfields: ""
+    podSecurityContext:
+      runAsUser: 1234
+      fsGroup: 1234
 
-  slack:
-    webhookurl: ""
-    footer: ""
-    icon: ""
-    outputformat: "all"
-    minimumpriority: ""
-    messageformat: ""
+    # One or more secrets to be used when pulling images
+    imagePullSecrets: []
+    # - registrySecretName
 
-  teams:
-    webhookurl: ""
-    activityimage: ""
-    outputformat: "all"
-    minimumpriority: ""
+    nameOverride: ""
+    fullnameOverride: ""
 
-  datadog:
-    apikey: ""
-    minimumpriority: ""
+    podSecurityPolicy:
+      create: false
 
-  alertmanager:
-    hostport: ""
+    priorityClassName: ""
+      
+    config:
 
-  elasticsearch:
-    hostport: "https://quickstart-es-http:9200"
-    index: "falco"
-    type: "event"
-    minimumpriority: ""
+      debug: false
+      ##
+      ## a list of comma separated custom fields to add to falco events, syntax is "key:value,key:value"
+      customfields: ""
 
-  influxdb:
-    hostport: ""
-    database: "falco"
-    user: ""
-    password: ""
-    minimumpriority: ""
+      slack:
+        webhookurl: ""
+        footer: ""
+        icon: ""
+        username: ""
+        outputformat: "all"
+        minimumpriority: ""
+        messageformat: ""
 
-  loki:
-    hostport: ""
-    minimumpriority: ""
+      rocketchat:
+        webhookurl: ""
+        icon: ""
+        username: ""
+        outputformat: "all"
+        minimumpriority: ""
+        messageformat: ""
 
-  nats:
-    hostport: ""
-    minimumpriority: ""
+      mattermost:
+        webhookurl: ""
+        footer: ""
+        icon: ""
+        username: ""
+        outputformat: "all"
+        minimumpriority: ""
+        messageformat: ""
 
-  aws:
-    accesskeyid: ""
-    secretaccesskey: ""
-    region : ""
-    lambda:
-      functionname : ""
-      minimumpriority: ""
-    sqs:
-      url : ""
-      minimumpriority: ""
+      teams:
+        webhookurl: ""
+        activityimage: ""
+        outputformat: "all"
+        minimumpriority: ""
 
-  smtp:
-    hostport: ""
-    user: ""
-    password: ""
-    from: ""
-    to: ""
-    outputformat: "html"
-    minimumpriority: ""
+      datadog:
+        apikey: ""
+        minimumpriority: ""
 
-  opsgenie:
-    aipkey: ""
-    region: ""
-    minimumpriority: ""
+      alertmanager:
+        hostport: ""
 
-  statsd:
-    forwarder: ""
-    namespace: "falcosidekick."
-    
-  dogstatsd:
-    forwarder: ""
-    namespace: "falcosidekick."
-    tags: ""
+      elasticsearch:
+        hostport: ""
+        index: "falco"
+        type: "event"
+        minimumpriority: ""
 
-  webhook:
-    address: ""
-    minimumpriority: ""
+      influxdb:
+        hostport: ""
+        database: "falco"
+        user: ""
+        password: ""
+        minimumpriority: ""
 
-service:
-  type: ClusterIP
-  port: 2801
+      loki:
+        hostport: ""
+        minimumpriority: ""
 
-ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths: []
+      nats:
+        hostport: ""
+        minimumpriority: ""
 
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+      aws:
+        accesskeyid: ""
+        secretaccesskey: ""
+        region : ""
+        lambda:
+          functionname : ""
+          minimumpriority: ""
+        sns:
+          topicarn : ""
+          rawjson: false
+          minimumpriority: ""
+        sqs:
+          url : ""
+          minimumpriority: ""
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+      smtp:
+        hostport: ""
+        user: ""
+        password: ""
+        from: ""
+        to: ""
+        outputformat: "html"
+        minimumpriority: ""
 
-nodeSelector: {}
+      opsgenie:
+        apikey: ""
+        region: ""
+        minimumpriority: ""
 
-tolerations: []
+      statsd:
+        forwarder: ""
+        namespace: "falcosidekick."
+        
+      dogstatsd:
+        forwarder: ""
+        namespace: "falcosidekick."
+        tags: ""
 
-affinity: {}
+      webhook:
+        address: ""
+        customHeaders: "" # a list of comma separated custom headers to add, syntax is "key:value,key:value"
+        minimumpriority: ""
+
+      azure:
+        subscriptionID: ""
+        resourceGroupName: ""
+        podIdentityClientID: ""
+        podIdentityName: ""
+        eventHub:
+          namespace: ""
+          name: ""
+          minimumpriority: ""
+
+      discord:
+        webhookurl: ""
+        icon: ""
+        minimumpriority: ""
+      
+      gcp:
+        credentials: "" # The base64-encoded JSON key file for the GCP service account
+        pubsub:
+          projectid: "" # The GCP Project ID containing the Pub/Sub Topic
+          topic: "" # The name of the Pub/Sub topic
+        # minimumpriority: "debug" # minimum priority of event for using this output, order is emergency|alert|critical|error|warning|notice|informational|debug or "" (default)
+
+      googlechat:
+        webhookurl: ""
+        outputformat: "all"
+        minimumpriority: ""
+        messageformat: ""
+
+    service:
+      type: ClusterIP
+      port: 2801
+
+    ingress:
+      enabled: false
+      annotations: {}
+        # kubernetes.io/ingress.class: nginx
+        # kubernetes.io/tls-acme: "true"
+      hosts:
+        - host: falcosidekick.local
+          paths: []
+
+      tls: []
+      #  - secretName: chart-example-tls
+      #    hosts:
+      #      - chart-example.local
+
+    resources: {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}

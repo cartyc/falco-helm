@@ -1,5 +1,5 @@
 
-apiVersion: helm.fluxcd.io/v1
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: falco
@@ -8,10 +8,14 @@ metadata:
     fluxcd.io/automated: "false"
 spec:
   releaseName: falco
+  interval: 5m
   chart:
-    repository: https://kubernetes-charts.storage.googleapis.com
-    version: 1.1.7
-    name: falco
+    spec:
+      chart: falco
+      sourceRef:
+          kind: HelmRepository
+          namespace: falco-system
+          name: falco
   values:
     # Default values for falco.
 
@@ -127,7 +131,7 @@ spec:
       timeFormatISO8601: false
 
       # Whether to output events in json or text
-      jsonOutput: false
+      jsonOutput: true  
 
       # When using json output, whether or not to include the "output" property
       # itself (e.g. "File below a known binary directory opened for writing
@@ -248,8 +252,8 @@ spec:
         #   end' | curl -d @- -X POST https://hooks.slack.com/services/xxxxxxxxx/xxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx
 
       httpOutput:
-        enabled: false
-        url: http://some.url
+        enabled: true
+        url: http://falcosidekick:2801/
 
       # The gRPC server is secure by default (mutual TLS) so you need to generate certificates and update their paths here.
       # By default the gRPC server is off.
